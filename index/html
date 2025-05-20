@@ -1,0 +1,59 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+  </head>
+  <body>
+    <a-scene
+      mindar-image="imageTargetSrc: ./kaeru.mind;"
+      color-space="sRGB"
+      renderer="colorManagement: true, physicallyCorrectLights"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+    >
+      <a-assets>
+        <!-- 認識対象のマーカー画像 -->
+        <img id="card" src="./kaeru.jpg" />
+
+        <!-- 再生する動画 -->
+        <video id="myVideo" src="./hoshi5.mp4" preload="auto" loop crossorigin="anonymous" playsinline webkit-playsinline></video>
+      </a-assets>
+
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      <a-entity mindar-image-target="targetIndex: 0">
+        <!-- マーカー上に動画を表示 -->
+        <a-video
+          src="#myVideo"
+          position="0 0 0"
+          rotation="0 0 0"
+          width="1"
+          height="0.56"
+        ></a-video>
+      </a-entity>
+    </a-scene>
+
+    <script>
+      // マーカー認識時に動画を再生・非認識で停止
+      document.addEventListener("DOMContentLoaded", () => {
+        const sceneEl = document.querySelector("a-scene");
+        const video = document.querySelector("#myVideo");
+
+        sceneEl.addEventListener("arReady", (event) => {
+          console.log("AR Ready");
+        });
+
+        sceneEl.addEventListener("targetFound", (event) => {
+          console.log("Target Found");
+          video.play();
+        });
+
+        sceneEl.addEventListener("targetLost", (event) => {
+          console.log("Target Lost");
+          video.pause();
+        });
+      });
+    </script>
+  </body>
+</html>
