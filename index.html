@@ -1,29 +1,72 @@
-<html>
+
+<!DOCTYPE html>
+<html lang="ja">
   <head>
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AR Video on Emaki</title>
+
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+    <style>
+      html, body {
+        margin: 0;
+        overflow: hidden;
+        background: black;
+        height: 100%;
+      }
+
+      #black-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: black;
+        z-index: 1;
+      }
+
+      a-scene {
+        width: 100vw;
+        height: 100vh;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
   </head>
   <body>
-    <a-scene
-      mindar-image="imageTargetSrc: ./kaeru.mind;"
-      color-space="sRGB"
-      renderer="colorManagement: true, physicallyCorrectLights"
-      vr-mode-ui="enabled: false"
-      device-orientation-permission-ui="enabled: false"
-    >
-      <a-assets>
-        <!-- 認識対象のマーカー画像 -->
-        <img id="card" src="./kaeru.jpg" />
+    <div id="black-overlay"></div>
 
-        <!-- 再生する動画 -->
-        <video id="myVideo" src="./hoshi5.mp4" preload="auto" loop crossorigin="anonymous" playsinline webkit-playsinline></video>
+    <a-scene
+  mindar-image="imageTargetSrc: ./kaeru.mind; filterMinCF:0.0001; showStats: false; uiScanning: false;"
+  color-space="sRGB"
+  renderer="colorManagement: true, physicallyCorrectLights, alpha: true"
+  vr-mode-ui="enabled: false"
+  device-orientation-permission-ui="enabled: false"
+>
+
+      <a-assets>
+        <video
+          id="myVideo"
+          src="./kaeru.mp4"
+          preload="auto"
+          loop
+          muted
+          crossorigin="anonymous"
+          playsinline
+          webkit-playsinline
+        ></video>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <!-- マーカー上に動画を表示 -->
         <a-video
           src="#myVideo"
           position="0 0 0"
@@ -35,23 +78,21 @@
     </a-scene>
 
     <script>
-      // マーカー認識時に動画を再生・非認識で停止
       document.addEventListener("DOMContentLoaded", () => {
         const sceneEl = document.querySelector("a-scene");
+        const overlay = document.querySelector("#black-overlay");
         const video = document.querySelector("#myVideo");
 
-        sceneEl.addEventListener("arReady", (event) => {
-          console.log("AR Ready");
-        });
+        video.addEventListener("loadeddata", () => {
+          sceneEl.addEventListener("targetFound", () => {
+            overlay.classList.add("hidden");
+            video.play();
+          });
 
-        sceneEl.addEventListener("targetFound", (event) => {
-          console.log("Target Found");
-          video.play();
-        });
-
-        sceneEl.addEventListener("targetLost", (event) => {
-          console.log("Target Lost");
-          video.pause();
+          sceneEl.addEventListener("targetLost", () => {
+            video.pause();
+            overlay.classList.remove("hidden");
+          });
         });
       });
     </script>
