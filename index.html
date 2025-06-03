@@ -21,9 +21,11 @@
       top: 0;
       left: 0;
     }
+      .hidden {
+        display: none;
+      }
   </style>
 </head>
-<body onclick="initializeVideosOnce()">
   <a-scene
     mindar-image="imageTargetSrc: ./test2.mind; filterMinCF:0.0001; showStats: false; uiScanning: false;"
     color-space="sRGB"
@@ -65,29 +67,39 @@
     </a-entity>
   </a-scene>
 
-  <script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const sceneEl = document.querySelector("a-scene");
+
+    // それぞれのvideo要素を取得
     const video1 = document.getElementById("video1");
     const video2 = document.getElementById("video2");
     const video3 = document.getElementById("video3");
     const video4 = document.getElementById("video4");
 
-    videos.forEach(({ id, index }) => {
-      const video = document.getElementById(id);
+    // 共通の関数でイベントをセット
+    const setupVideoEvents = (video, index) => {
       video.addEventListener("loadeddata", () => {
         sceneEl.addEventListener("targetFound", (e) => {
-          if (e.detail.targetIndex === index) video.play();
+          if (e.detail.targetIndex === index) {
+            video.play();
+          }
         });
+
         sceneEl.addEventListener("targetLost", (e) => {
-          if (e.detail.targetIndex === index) video.pause();
+          if (e.detail.targetIndex === index) {
+            video.pause();
+          }
         });
       });
-    });
+    };
+
+    // 各動画にイベントを設定
+    setupVideoEvents(video1, 0);
+    setupVideoEvents(video2, 1);
+    setupVideoEvents(video3, 2);
+    setupVideoEvents(video4, 3);
   });
 </script>
-
-  </script>
 </body>
 </html>
