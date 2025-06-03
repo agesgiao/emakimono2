@@ -66,45 +66,35 @@
   </a-scene>
 
   <script>
-    const videoElements = [
-      document.getElementById("video1"),
-      document.getElementById("video2"),
-      document.getElementById("video3"),
-      document.getElementById("video4"),
-    ];
+document.addEventListener("DOMContentLoaded", () => {
+  const sceneEl = document.querySelector("a-scene");
 
-    let initialized = false;
-    function initializeVideosOnce() {
-      if (initialized) return;
-      initialized = true;
+  const video1 = document.getElementById("video1");
+  const video2 = document.getElementById("video2");
+  const video3 = document.getElementById("video3");
+  const video4 = document.getElementById("video4");
 
-      videoElements.forEach(video => {
-        video.play().then(() => {
-          video.pause(); // 初期化のために一度再生してすぐ止める
-          console.log(video.id + " is initialized");
-        }).catch(err => {
-          console.error("Video initialization failed:", err);
-        });
-      });
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const sceneEl = document.querySelector("a-scene");
-
+  const setupVideoEvents = (video, index) => {
+    video.addEventListener("loadeddata", () => {
       sceneEl.addEventListener("targetFound", (e) => {
-        const idx = e.detail.targetIndex;
-        if (videoElements[idx]) {
-          videoElements[idx].play();
+        if (e.detail.targetIndex === index) {
+          video.play();
         }
       });
-
       sceneEl.addEventListener("targetLost", (e) => {
-        const idx = e.detail.targetIndex;
-        if (videoElements[idx]) {
-          videoElements[idx].pause();
+        if (e.detail.targetIndex === index) {
+          video.pause();
         }
       });
     });
+  };
+
+  setupVideoEvents(video1, 0);
+  setupVideoEvents(video2, 1);
+  setupVideoEvents(video3, 2);
+  setupVideoEvents(video4, 3);
+});
+
   </script>
 </body>
 </html>
