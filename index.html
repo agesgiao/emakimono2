@@ -1,120 +1,110 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AR Video on Emaki</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MindAR 4 Video Targets</title>
 
-    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
-    <style>
-      html, body {
-        margin: 0;
-        overflow: hidden;
-        height: 100%;
-      }
+  <style>
+    html, body {
+      margin: 0;
+      overflow: hidden;
+      height: 100%;
+    }
+    a-scene {
+      width: 100vw;
+      height: 100vh;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  </style>
+</head>
+<body onclick="initializeVideosOnce()">
+  <a-scene
+    mindar-image="imageTargetSrc: ./test2.mind; filterMinCF:0.0001; showStats: false; uiScanning: false;"
+    color-space="sRGB"
+    renderer="colorManagement: true, physicallyCorrectLights, alpha: true"
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false"
+  >
+    <a-assets>
+      <video id="video1" src="./hana.mp4" autoplay muted loop playsinline></video>
+      <video id="video2" src="./ame.mp4" autoplay muted loop playsinline></video>
+      <video id="video3" src="./hare.mp4" autoplay muted loop playsinline></video>
+      <video id="video4" src="./yumi.mp4" autoplay muted loop playsinline></video>
+    </a-assets>
 
-      a-scene {
-        width: 100vw;
-        height: 100vh;
-        position: absolute;
-        top: 0;
-        left: 0;
-      }
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      .hidden {
-        display: none;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="black-overlay"></div>
+    <!-- ターゲット 0 -->
+    <a-entity mindar-image-target="targetIndex: 0">
+      <a-plane width="1" height="0.56" position="0 0 0"
+               material="shader: flat; src: #video1"></a-plane>
+    </a-entity>
 
-    <a-scene
-  mindar-image="imageTargetSrc: ./test2.mind; filterMinCF:0.0001; showStats: false; uiScanning: false;"
-  color-space="sRGB"
-  renderer="colorManagement: true, physicallyCorrectLights, alpha: true"
-  vr-mode-ui="enabled: false"
-  device-orientation-permission-ui="enabled: false"
->
+    <!-- ターゲット 1 -->
+    <a-entity mindar-image-target="targetIndex: 1">
+      <a-plane width="1" height="0.56" position="0 0 0"
+               material="shader: flat; src: #video2"></a-plane>
+    </a-entity>
 
-<a-assets>
-  <video id="video1" src="./hana.mp4" preload="auto" loop muted playsinline autoplay></video>
-  <video id="video2" src="./ame.mp4" preload="auto" loop muted playsinline autoplay></video>
-  <video id="video3" src="./hare.mp4" preload="auto" loop muted playsinline autoplay></video>
-  <video id="video4" src="./yumi.mp4" preload="auto" loop muted playsinline autoplay></video>
-</a-assets>
+    <!-- ターゲット 2 -->
+    <a-entity mindar-image-target="targetIndex: 2">
+      <a-plane width="1" height="0.56" position="0 0 0"
+               material="shader: flat; src: #video3"></a-plane>
+    </a-entity>
 
-		
-      
+    <!-- ターゲット 3 -->
+    <a-entity mindar-image-target="targetIndex: 3">
+      <a-plane width="1" height="0.56" position="0 0 0"
+               material="shader: flat; src: #video4"></a-plane>
+    </a-entity>
+  </a-scene>
 
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+  <script>
+    const videoElements = [
+      document.getElementById("video1"),
+      document.getElementById("video2"),
+      document.getElementById("video3"),
+      document.getElementById("video4"),
+    ];
 
-      <!-- ターゲット0に対応する動画 -->
-      <a-entity mindar-image-target="targetIndex: 0">
-        <a-video src="#video1" position="0 0 0" width="1" height="0.56"></a-video>
-      </a-entity>
+    let initialized = false;
+    function initializeVideosOnce() {
+      if (initialized) return;
+      initialized = true;
 
-      <!-- ターゲット1に対応する動画 -->
-      <a-entity mindar-image-target="targetIndex: 1">
-        <a-video src="#video2" position="0 0 0" width="1" height="0.56"></a-video>
-      </a-entity>
-    </a-scene>
+      videoElements.forEach(video => {
+        video.play().then(() => {
+          video.pause(); // 初期化のために一度再生してすぐ止める
+          console.log(video.id + " is initialized");
+        }).catch(err => {
+          console.error("Video initialization failed:", err);
+        });
+      });
+    }
 
-    <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const sceneEl = document.querySelector("a-scene");
-  const video1 = document.querySelector("#video1");
-  const video2 = document.querySelector("#video2");
-  const video3 = document.querySelector("#video3");
-  const video4 = document.querySelector("#video4");
+    document.addEventListener("DOMContentLoaded", () => {
+      const sceneEl = document.querySelector("a-scene");
 
-  video1.addEventListener("loadeddata", () => {
-    sceneEl.addEventListener("targetFound", (e) => {
-      const targetIndex = e.detail.targetIndex;
-      if (targetIndex === 0) video1.play();
+      sceneEl.addEventListener("targetFound", (e) => {
+        const idx = e.detail.targetIndex;
+        if (videoElements[idx]) {
+          videoElements[idx].play();
+        }
+      });
+
+      sceneEl.addEventListener("targetLost", (e) => {
+        const idx = e.detail.targetIndex;
+        if (videoElements[idx]) {
+          videoElements[idx].pause();
+        }
+      });
     });
-    sceneEl.addEventListener("targetLost", (e) => {
-      const targetIndex = e.detail.targetIndex;
-      if (targetIndex === 0) video1.pause();
-    });
-  });
-
-  video2.addEventListener("loadeddata", () => {
-    sceneEl.addEventListener("targetFound", (e) => {
-      const targetIndex = e.detail.targetIndex;
-      if (targetIndex === 1) video2.play();
-    });
-    sceneEl.addEventListener("targetLost", (e) => {
-      const targetIndex = e.detail.targetIndex;
-      if (targetIndex === 1) video2.pause();
-    });
-  });
-
-  video3.addEventListener("loadeddata", () => {
-    sceneEl.addEventListener("targetFound", (e) => {
-      const targetIndex = e.detail.targetIndex;
-      if (targetIndex === 2) video3.play();
-    });
-    sceneEl.addEventListener("targetLost", (e) => {
-      const targetIndex = e.detail.targetIndex;
-      if (targetIndex === 2) video3.pause();
-    });
-  });
-
-  video4.addEventListener("loadeddata", () => {
-    sceneEl.addEventListener("targetFound", (e) => {
-      const targetIndex = e.detail.targetIndex;
-      if (targetIndex === 3) video4.play();
-    });
-    sceneEl.addEventListener("targetLost", (e) => {
-      const targetIndex = e.detail.targetIndex;
-      if (targetIndex === 3) video4.pause();
-    });
-  });
-});
-
-    </script>
-  </body>
+  </script>
+</body>
 </html>
