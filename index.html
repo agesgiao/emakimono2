@@ -32,17 +32,20 @@
     <div id="black-overlay"></div>
 
     <a-scene
-  mindar-image="imageTargetSrc: ./5targets.mind; filterMinCF:0.0001; showStats: false; uiScanning: false;"
+  mindar-image="imageTargetSrc: ./test.mind; filterMinCF:0.0001; showStats: false; uiScanning: false;"
   color-space="sRGB"
   renderer="colorManagement: true, physicallyCorrectLights, alpha: true"
   vr-mode-ui="enabled: false"
   device-orientation-permission-ui="enabled: false"
 >
 
-		<a-assets>
-        <video id="video1" src="./hoshi5.mp4" preload="auto" loop muted playsinline></video>
-        <video id="video2" src="./sample.mp4" preload="auto" loop muted playsinline></video>
-      </a-assets>
+<a-assets>
+  <video id="video1" src="./hana.mp4" preload="auto" loop muted playsinline></video>
+  <video id="video2" src="./ame.mp4" preload="auto" loop muted playsinline></video>
+  <video id="video3" src="./hare.mp4" preload="auto" loop muted playsinline></video>
+  <video id="video4" src="./yumi.mp4" preload="auto" loop muted playsinline></video>
+</a-assets>
+
 		
       
 
@@ -60,34 +63,58 @@
     </a-scene>
 
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const sceneEl = document.querySelector("a-scene");
-       const video1 = document.querySelector("#video1");
-        const video2 = document.querySelector("#video2");
-		  
-        video1.addEventListener("loadeddata", () => {
-          sceneEl.addEventListener("targetFound", (e) => {
-            const targetIndex = e.detail.targetIndex;
-            if (targetIndex === 0) video1.play();
-          });
-          sceneEl.addEventListener("targetLost", (e) => {
-            const targetIndex = e.detail.targetIndex;
-            if (targetIndex === 0) video1.pause();
-          });
-        });
-		  
-		  video2.addEventListener("loadeddata", () => {
-          sceneEl.addEventListener("targetFound", (e) => {
-            const targetIndex = e.detail.targetIndex;
-            if (targetIndex === 1) video2.play();
-          });
-          sceneEl.addEventListener("targetLost", (e) => {
-            const targetIndex = e.detail.targetIndex;
-            if (targetIndex === 1) video2.pause();
-          });
-        });
+document.addEventListener("DOMContentLoaded", () => {
+  const sceneEl = document.querySelector("a-scene");
+  const video1 = document.querySelector("#video1");
+  const video2 = document.querySelector("#video2");
+  const video3 = document.querySelector("#video3");
+  const video4 = document.querySelector("#video4");
 
-      });
+  video1.addEventListener("loadeddata", () => {
+    sceneEl.addEventListener("targetFound", (e) => {
+      const targetIndex = e.detail.targetIndex;
+      if (targetIndex === 0) video1.play();
+    });
+    sceneEl.addEventListener("targetLost", (e) => {
+      const targetIndex = e.detail.targetIndex;
+      if (targetIndex === 0) video1.pause();
+    });
+  });
+
+  video2.addEventListener("loadeddata", () => {
+    sceneEl.addEventListener("targetFound", (e) => {
+      const targetIndex = e.detail.targetIndex;
+      if (targetIndex === 1) video2.play();
+    });
+    sceneEl.addEventListener("targetLost", (e) => {
+      const targetIndex = e.detail.targetIndex;
+      if (targetIndex === 1) video2.pause();
+    });
+  });
+
+  video3.addEventListener("loadeddata", () => {
+    sceneEl.addEventListener("targetFound", (e) => {
+      const targetIndex = e.detail.targetIndex;
+      if (targetIndex === 2) video3.play();
+    });
+    sceneEl.addEventListener("targetLost", (e) => {
+      const targetIndex = e.detail.targetIndex;
+      if (targetIndex === 2) video3.pause();
+    });
+  });
+
+  video4.addEventListener("loadeddata", () => {
+    sceneEl.addEventListener("targetFound", (e) => {
+      const targetIndex = e.detail.targetIndex;
+      if (targetIndex === 3) video4.play();
+    });
+    sceneEl.addEventListener("targetLost", (e) => {
+      const targetIndex = e.detail.targetIndex;
+      if (targetIndex === 3) video4.pause();
+    });
+  });
+});
+
     </script>
   </body>
 </html>
