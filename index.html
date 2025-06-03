@@ -66,34 +66,29 @@
   </a-scene>
 
   <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const sceneEl = document.querySelector("a-scene");
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const sceneEl = document.querySelector("a-scene");
+    const videos = [
+      { id: "video1", index: 0 },
+      { id: "video2", index: 1 },
+      { id: "video3", index: 2 },
+      { id: "video4", index: 3 },
+    ];
 
-  const video1 = document.getElementById("video1");
-  const video2 = document.getElementById("video2");
-  const video3 = document.getElementById("video3");
-  const video4 = document.getElementById("video4");
-
-  const setupVideoEvents = (video, index) => {
-    video.addEventListener("loadeddata", () => {
-      sceneEl.addEventListener("targetFound", (e) => {
-        if (e.detail.targetIndex === index) {
-          video.play();
-        }
-      });
-      sceneEl.addEventListener("targetLost", (e) => {
-        if (e.detail.targetIndex === index) {
-          video.pause();
-        }
+    videos.forEach(({ id, index }) => {
+      const video = document.getElementById(id);
+      video.addEventListener("loadeddata", () => {
+        sceneEl.addEventListener("targetFound", (e) => {
+          if (e.detail.targetIndex === index) video.play();
+        });
+        sceneEl.addEventListener("targetLost", (e) => {
+          if (e.detail.targetIndex === index) video.pause();
+        });
       });
     });
-  };
-
-  setupVideoEvents(video1, 0);
-  setupVideoEvents(video2, 1);
-  setupVideoEvents(video3, 2);
-  setupVideoEvents(video4, 3);
-});
+  });
+</script>
 
   </script>
 </body>
